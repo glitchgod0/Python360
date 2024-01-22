@@ -10,4 +10,4 @@ XEX2 - Very early, not much info is displayed. Set DEBUG to True in the script t
 Since this is my first orignal project the code is quite messy, I will be aiming to clean the spaghetti soon.
 
 ## Thanks
-[Free60 Wiki](https://free60.org/)- Literally couldn't have done this without this.
+[Free60 Wiki](https://free60.org/) - Literally couldn't have done this without this.
