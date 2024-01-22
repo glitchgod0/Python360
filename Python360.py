@@ -4,7 +4,7 @@ import binascii
 
 print("Python360 Test by Glitchgod")
 
-DEBUG = False
+DEBUG = True
 
 
 def ConHandler():
@@ -15,6 +15,34 @@ def ConHandler():
 		print("01 Devkit")
 	else:
 		print("Unknown signing")
+
+	print("\nCertificate Info:\n")
+	File.seek(11)
+	print(f"Certificate Owner Console Part Number: {File.read(11)}")
+	File.seek(32)
+	print(f"Certificate Date of Generation: {File.read(8)}")
+
+
+	if DEBUG == True:
+		print("\n[DEBUG CON OUT]")
+		File.seek(4)
+		print(f"[DEBUG] {binascii.hexlify(File.read(2), b' ')} Public Key Certificate Size") 
+		File.seek(6)
+		print(f"[DEBUG] {binascii.hexlify(File.read(5), b' ')} Certificate Owner Console ID")
+		File.seek(11)
+		print(f"[DEBUG] {binascii.hexlify(File.read(14), b' ')} Certificate Owner Console Part Number")
+		File.seek(31)
+		print(f"[DEBUG] {binascii.hexlify(File.read(1), b' ')} Console Type")
+		File.seek(32)
+		print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')} Certificate Date of Generation")
+		File.seek(40)
+		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} Public Exponent")
+		File.seek(44)
+		print(f"[DEBUG] {binascii.hexlify(File.read(80), b' ')} Public Modulus")
+		File.seek(172)
+		print(f"[DEBUG] {binascii.hexlify(File.read(100), b' ')} Certificate Signature")
+		File.seek(428)
+		print(f"[DEBUG] {binascii.hexlify(File.read(80), b' ')} Signature")
 
 def LiveHandler():
 	print("LIVE handling not ready!")
@@ -70,13 +98,13 @@ if len(sys.argv) != 1: #Check if theres arguments
 	FilePath = sys.argv[1] #set FilePath to Argument
 	if os.path.exists(FilePath): #Check if FilePath is actually a valid path
 		if DEBUG == True:
-			print(f"[DEBUG] File Path = {FilePath}") #print FilePath
+			print(f"\n[DEBUG] File Path = {FilePath}") #print FilePath
 
 		File = open(FilePath, "rb+") #Open File
 		FileType = File.read(4) #Read the first 4 bytes
 
 		if DEBUG == True:
-			print(f"[DEBUG] File Type: {FileType}") #print file type
+			print(f"[DEBUG] File Type: {FileType}\n") #print file type
 
 		if FileType == b'CON ':
 			print("CON File")
