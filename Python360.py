@@ -1,6 +1,6 @@
 import sys
 import os 
-
+import binascii
 
 print("Python360 Test by Glitchgod")
 
@@ -44,19 +44,18 @@ if len(sys.argv) != 1: #Check if theres arguments
 
 		File = open(FilePath, "rb+") #Open File
 		FileType = File.read(4) #Read the first 4 bytes
-		FileType=str(FileType, 'utf-8') #removes the b from the start of the string
 
 		if DEBUG == True:
 			print(f"[DEBUG] File Type: {FileType}") #print file type
 
-			if FileType == "CON ":
+			if FileType == b'CON ':
 				print("CON File")
 				ConHandler()
-			elif FileType == "LIVE":
+			elif FileType == b'LIVE':
 				print("LIVE File")
 				LIVE = True
 				LiveHandler()
-			elif FileType == "XEX2":
+			elif FileType == b'XEX2':
 				print("XEX File")
 				XEX2 = True
 				XEXHandler()
