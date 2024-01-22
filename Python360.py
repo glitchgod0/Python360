@@ -4,7 +4,7 @@ import binascii
 
 print("Python360 Test by Glitchgod\n")
 
-DEBUG = True
+DEBUG = False
 
 
 def ConHandler():
@@ -14,6 +14,8 @@ def ConHandler():
 	# you verify the console certificate against microsoft's master key and then
 	# verify the content signature against the console certificate's public key" - Emma
 
+	LiveHandler()
+
 	File.seek(31)
 	if File.read(1) == b'\x02':
 		print("Retail")
@@ -22,7 +24,7 @@ def ConHandler():
 	else:
 		print("Unknown signing")
 
-	print("\nCertificate Info:\n")
+	print("\nCertificate Info:")
 	File.seek(4)
 	print(f"Public Key Certificate Size: {binascii.hexlify(File.read(2))}") 
 	File.seek(6)
@@ -33,16 +35,18 @@ def ConHandler():
 	print(f"Certificate Date of Generation: {File.read(8)}")
 	File.seek(40)
 	print(f"Public Exponent: {binascii.hexlify(File.read(4))}")
+	#answer = input("\nPrint Large info? [Y/N]: ")
+	#if answer == "Y" or "y":
+	File.seek(44)
+	print(f"Public Modulus: {binascii.hexlify(File.read(80))}")
+	File.seek(172)
+	print(f"Certificate Signature: {binascii.hexlify(File.read(100))}")
+	File.seek(428)
+	print(f"Signature: {binascii.hexlify(File.read(80))}")
 
-	answer = input("\nPrint Large info? [Y/N]: ")
-	if answer == "Y" or "y":
-		File.seek(44)
-		print(f"Public Modulus: {binascii.hexlify(File.read(80))}")
-		File.seek(172)
-		print(f"Certificate Signature: {binascii.hexlify(File.read(100))}")
-		File.seek(428)
-		print(f"Signature: {binascii.hexlify(File.read(80))}")
 
+	#answer = input("\nPrint Large info? [Y/N]: ")
+	#if answer == "Y" or "y":
 
 
 def LiveHandler():
@@ -52,19 +56,15 @@ def LiveHandler():
 	print(f"Metadata Version: {binascii.hexlify(File.read(1))}")
 	File.seek(836)
 	ContentTypeHandler()
-	File.seek(844)
-	print(f"Content Size: {binascii.hexlify(File.read(8))}")
-	File.seek(852)
-
-	File.seek(1041)
-	TitleName = File.read(80)
-	TitleNameOut = TitleName.decode('utf-8')
-	print(f"Display Name: {TitleNameOut}")
 
 	File.seek(5777)
 	TitleName = File.read(80)
 	TitleNameOut = TitleName.decode('utf-8')
 	print(f"Title Name: {TitleNameOut}")
+	File.seek(1041)
+	TitleName = File.read(80)
+	TitleNameOut = TitleName.decode('utf-8')
+	print(f"Display Name: {TitleNameOut}")
 	#TODO: Option to read all locales
 
 	File.seek(3345)
@@ -81,83 +81,89 @@ def LiveHandler():
 	TitleNameOut = TitleName.decode('utf-8')
 	print(f"Publisher Name: {TitleNameOut}")
 
+	File.seek(852)
 	print(f"Media ID: {binascii.hexlify(File.read(4))}")
 
-	File.seek(556)
-	
+	File.seek(5905)
+	print(f"Transfer Flag: {binascii.hexlify(File.read(1))}")
+
 	if DEBUG == True:
-		print(f"\n[DEBUG]Licensing Data: {binascii.hexlify(File.read(8))}")
+		File.seek(556)
+		print(f"\n[DEBUG] Licensing Data: {binascii.hexlify(File.read(8))}")
 		File.seek(564)
-		print(f"[DEBUG]Licensing Data: {binascii.hexlify(File.read(4))}")
+		print(f"[DEBUG] Licensing Data: {binascii.hexlify(File.read(4))}")
 		File.seek(568)
-		print(f"[DEBUG]Licensing Data: {binascii.hexlify(File.read(4))}")
+		print(f"[DEBUG] Licensing Data: {binascii.hexlify(File.read(4))}")
+		File.seek(844)
+		print(f"[DEBUG] Content Size: {binascii.hexlify(File.read(8))}")
+	return
 
 
 def ContentTypeHandler():
 	ContentTypeMatch = binascii.hexlify(File.read(4))
 	match ContentTypeMatch:
 		case (b'00000001'):
-			print("Saved Game")
+			print("Content Type: Saved Game")
 		case (b'00000002'):
-			print("Marketplace Content")
+			print("Content Type: Marketplace Content")
 		case (b'00000003'):
-			print("Publisher")
+			print("Content Type: Publisher")
 		case (b'00001000'):
-			print("Xbox 360 Title")
+			print("Content Type: Xbox 360 Title")
 		case (b'00002000'):
-			print("IPTV Pause Buffer")
+			print("Content Type: IPTV Pause Buffer")
 		case (b'00004000'):
-			print("Installed Game")
+			print("Content Type: Installed Game")
 		case (b'00005000'):
-			print("Xbox Original Game")
+			print("Content Type: Xbox Original Game")
 		case (b'00007000'):
-			print("Game on Demand")
+			print("Content Type: Game on Demand")
 		case (b'00009000'):
-			print("Avatar Item")
+			print("Content Type: Avatar Item")
 		case (b'00010000'):
-			print("Profile")
+			print("Content Type: Profile")
 		case (b'00020000'):
-			print("Gamer Picture")
+			print("Content Type: Gamer Picture")
 		case (b'00030000'):
-			print("Theme")
+			print("Content Type: Theme")
 		case (b'00040000'):
-			print("Cache File")
+			print("Content Type: Cache File")
 		case (b'00050000'):
-			print("Storage Download")
+			print("Content Type: Storage Download")
 		case (b'00060000'):
-			print("Xbox Saved Game")
+			print("Content Type: Xbox Saved Game")
 		case (b'00070000'):
-			print("Xbox Download")
+			print("Content Type: Xbox Download")
 		case (b'00080000'):
-			print("Game Demo")
+			print("Content Type: Game Demo")
 		case (b'00090000'):
-			print("Video")
+			print("Content Type: Video")
 		case (b'000A0000'):
-			print("Game Title")
+			print("Content Type: Game Title")
 		case (b'000B0000'):
-			print("Installer")
+			print("Content Type: Installer")
 		case (b'000C0000'):
-			print("Game Trailer")
+			print("Content Type: Game Trailer")
 		case (b'000D0000'):
-			print("Arcade Title")
+			print("Content Type: Arcade Title")
 		case (b'000E0000'):
-			print("XNA")
+			print("Content Type: XNA")
 		case (b'000F0000'):
-			print("License Store")
+			print("Content Type: License Store")
 		case (b'01000000'):
-			print("Movie")
+			print("Content Type: Movie")
 		case (b'02000000'):
-			print("TV")
+			print("Content Type: TV")
 		case (b'03000000'):
-			print("Music Video")
+			print("Content Type: Music Video")
 		case (b'04000000'):
-			print("Game Video")
+			print("Content Type: Game Video")
 		case (b'05000000'):
-			print("Podcast Video")
+			print("Content Type: Podcast Video")
 		case (b'06000000'):
-			print("Viral Video")
+			print("Content Type: Viral Video")
 		case (b'20000000'):
-			print("Community Game")
+			print("Content Type: Community Game")
 	return
 
 def XEXHandler():
