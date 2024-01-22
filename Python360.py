@@ -2,21 +2,25 @@ import sys
 import os 
 import binascii
 
-print("Python360 Test by Glitchgod")
+print("Python360 Test by Glitchgod\n")
 
-DEBUG = True
+DEBUG = False
 
 
 def ConHandler():
 	File.seek(31)
 	if File.read(1) == b'\x02':
-		print("02 Retail")
+		print("Retail")
 	elif File.read(1) == b'\x01':
-		print("01 Devkit")
+		print("Devkit")
 	else:
 		print("Unknown signing")
 
 	print("\nCertificate Info:\n")
+	File.seek(4)
+	print(f"Public Key Certificate Size: {binascii.hexlify(File.read(2))}") 
+	File.seek(6)
+	print(f"Certificate Owner Console ID: {binascii.hexlify(File.read(5))}")
 	File.seek(11)
 	print(f"Certificate Owner Console Part Number: {File.read(11)}")
 	File.seek(32)
@@ -107,7 +111,7 @@ if len(sys.argv) != 1: #Check if theres arguments
 			print(f"[DEBUG] File Type: {FileType}\n") #print file type
 
 		if FileType == b'CON ':
-			print("CON File")
+			print("CON File:")
 			ConHandler()
 		elif FileType == b'LIVE':
 			print("LIVE File")
