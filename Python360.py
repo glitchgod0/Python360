@@ -4,7 +4,7 @@ import binascii
 
 print("Python360 Test by Glitchgod\n")
 
-DEBUG = False
+DEBUG = True
 
 
 def ConHandler():
@@ -167,55 +167,60 @@ def ContentTypeHandler():
 	return
 
 def XEXHandler():
-	# First 4 bytes get ate. idk why
-	File.seek(7)
-	Flags = binascii.hexlify(File.read(1), b' ')  # Flags
-	
-	if Flags == b'00':
-		print("Title Module")
-	elif Flags == b'01':
-		print("Exports To Title")
-	elif Flags == b'02':
-		print("System Debugger")
-	elif Flags == b'03':
-		print("DLL Module")
-	elif Flags == b'04':
-		print("Module Patch")
-	elif Flags == b'05':
-		print("Patch Full")
-	elif Flags == b'06':
-		print("Patch Delta")
-	elif Flags == b'07':
-		print("User Mode")
-	else:
-		print("Unknown Flag")
+	print("XEX2 file support is very basic and not ready. Set DEBUG to True in the script to show the basic info.\n")
 
 	if DEBUG == True:
-			File.seek(8)
-			print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} PE Data Offset") # PE Data Offset
-			File.seek(12)
-			print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} Reserved") # Reserved
-			File.seek(16)
-			print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} Security Info Offset") # Security Info Offset
-			File.seek(23)
-			OptionalHeaderCount = binascii.hexlify(File.read(1), b' ')
-			print(f"[DEBUG] Header Count: {OptionalHeaderCount}")
-			File.seek(24)
-			print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
-			File.seek(28)
-			print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')}")
-			File.seek(36)
-			print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
-			File.seek(40)
-			print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')}")
-			File.seek(48)
-			print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
-			File.seek(52)
-			print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')}")
-			File.seek(60)
-			print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
-			File.seek(64)
-			print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')}")
+		# First 4 bytes get ate. idk why
+		File.seek(7)
+		Flags = binascii.hexlify(File.read(1), b' ')  # Flags
+		
+		print("Parsed Data:")
+		#make into a match case
+		if Flags == b'00':
+			print("Title Module")
+		elif Flags == b'01':
+			print("Exports To Title")
+		elif Flags == b'02':
+			print("System Debugger")
+		elif Flags == b'03':
+			print("DLL Module")
+		elif Flags == b'04':
+			print("Module Patch")
+		elif Flags == b'05':
+			print("Patch Full")
+		elif Flags == b'06':
+			print("Patch Delta")
+		elif Flags == b'07':
+			print("User Mode")
+		else:
+			print("Unknown Flag")
+
+	
+		File.seek(8)
+		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} PE Data Offset") # PE Data Offset
+		File.seek(12)
+		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} Reserved") # Reserved
+		File.seek(16)
+		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} Security Info Offset") # Security Info Offset
+		File.seek(23)
+		OptionalHeaderCount = binascii.hexlify(File.read(1), b' ')
+		print(f"[DEBUG] Header Count: {OptionalHeaderCount}")
+		File.seek(24)
+		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
+		File.seek(28)
+		print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')}")
+		File.seek(36)
+		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
+		File.seek(40)
+		print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')}")
+		File.seek(48)
+		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
+		File.seek(52)
+		print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')}")
+		File.seek(60)
+		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
+		File.seek(64)
+		print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')}")
 
 
 
