@@ -4,10 +4,16 @@ import binascii
 
 print("Python360 Test by Glitchgod\n")
 
-DEBUG = False
+DEBUG = True
 
 
 def ConHandler():
+
+	#TODO: look into the signature
+	#"the signature is PKCS1 in big-endian format if you want to verify that
+	# you verify the console certificate against microsoft's master key and then
+	# verify the content signature against the console certificate's public key" - Emma
+
 	File.seek(31)
 	if File.read(1) == b'\x02':
 		print("Retail")
@@ -25,56 +31,28 @@ def ConHandler():
 	print(f"Certificate Owner Console Part Number: {File.read(11)}")
 	File.seek(32)
 	print(f"Certificate Date of Generation: {File.read(8)}")
+	File.seek(40)
+	print(f"Public Exponent: {binascii.hexlify(File.read(4))}")
 
-
-	if DEBUG == True:
-		print("\n[DEBUG CON OUT]")
-		File.seek(4)
-		print(f"[DEBUG] {binascii.hexlify(File.read(2), b' ')} Public Key Certificate Size") 
-		File.seek(6)
-		print(f"[DEBUG] {binascii.hexlify(File.read(5), b' ')} Certificate Owner Console ID")
-		File.seek(11)
-		print(f"[DEBUG] {binascii.hexlify(File.read(14), b' ')} Certificate Owner Console Part Number")
-		File.seek(31)
-		print(f"[DEBUG] {binascii.hexlify(File.read(1), b' ')} Console Type")
-		File.seek(32)
-		print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')} Certificate Date of Generation")
-		File.seek(40)
-		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} Public Exponent")
+	answer = input("\nPrint Large info? [Y/N]: ")
+	if answer == "Y" or "y":
 		File.seek(44)
-		print(f"[DEBUG] {binascii.hexlify(File.read(80), b' ')} Public Modulus")
+		print(f"Public Modulus: {binascii.hexlify(File.read(80))}")
 		File.seek(172)
-		print(f"[DEBUG] {binascii.hexlify(File.read(100), b' ')} Certificate Signature")
+		print(f"Certificate Signature: {binascii.hexlify(File.read(100))}")
 		File.seek(428)
-		print(f"[DEBUG] {binascii.hexlify(File.read(80), b' ')} Signature")
+		print(f"Signature: {binascii.hexlify(File.read(80))}")
+
+
 
 def LiveHandler():
 	print("LIVE handling not ready!")
 
 def XEXHandler():
-	print("XEX Header:")
-
-	
 	# First 4 bytes get ate. idk why
 	File.seek(7)
 	Flags = binascii.hexlify(File.read(1), b' ')  # Flags
-	if DEBUG == True:
-		File.seek(8)
-		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} PE Data Offset") # PE Data Offset
-		File.seek(12)
-		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} Reserved") # Reserved
-		File.seek(16)
-		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} Security Info Offset") # Security Info Offset
-		File.seek(23)
-		OptionalHeaderCount = binascii.hexlify(File.read(1), b' ')
-		print(f"[DEBUG] {OptionalHeaderCount}")
-		File.seek(24)
-		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
-		File.seek(28)
-		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
-
-	print("Properly Parsed Data:")
-
+	
 	if Flags == b'00':
 		print("Title Module")
 	elif Flags == b'01':
@@ -94,6 +72,20 @@ def XEXHandler():
 	else:
 		print("Unknown Flag")
 
+	if DEBUG == True:
+			File.seek(8)
+			print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} PE Data Offset") # PE Data Offset
+			File.seek(12)
+			print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} Reserved") # Reserved
+			File.seek(16)
+			print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} Security Info Offset") # Security Info Offset
+			File.seek(23)
+			OptionalHeaderCount = binascii.hexlify(File.read(1), b' ')
+			print(f"[DEBUG] Header Count: {OptionalHeaderCount}")
+			File.seek(24)
+			print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
+			File.seek(28)
+			print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
 
 
 
@@ -114,11 +106,11 @@ if len(sys.argv) != 1: #Check if theres arguments
 			print("CON File:")
 			ConHandler()
 		elif FileType == b'LIVE':
-			print("LIVE File")
+			print("LIVE File:")
 			LIVE = True
 			LiveHandler()
 		elif FileType == b'XEX2':
-			print("XEX File")
+			print("XEX File:")
 			XEX2 = True
 			XEXHandler()
 		else:
