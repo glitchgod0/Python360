@@ -246,6 +246,9 @@ if len(sys.argv) != 1: #Check if theres arguments
 		elif FileType == b'LIVE':
 			print("LIVE File:")
 			LiveHandler()
+		elif FileType == b'PIRS':
+			print("PIRS File:")
+			LiveHandler()
 		elif FileType == b'XEX2':
 			XEXHandler()
 		else:
