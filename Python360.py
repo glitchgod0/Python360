@@ -46,7 +46,84 @@ def ConHandler():
 
 
 def LiveHandler():
-	print("LIVE handling not ready!")
+	File.seek(4)
+	print(f"Package Signature: {binascii.hexlify(File.read(100))}")
+	File.seek(843)
+	print(f"Metadata Version: {binascii.hexlify(File.read(1))}")
+	File.seek(836)
+	ContentTypeHandler()
+
+	File.seek(556)
+	
+	if DEBUG == True:
+		print(f"[DEBUG]Licensing Data: {binascii.hexlify(File.read(100))}")
+
+def ContentTypeHandler():
+	ContentTypeMatch = binascii.hexlify(File.read(4))
+	match ContentTypeMatch:
+		case (b'00000001'):
+			print("Saved Game")
+		case (b'00000002'):
+			print("Marketplace Content")
+		case (b'00000003'):
+			print("Publisher")
+		case (b'00001000'):
+			print("Xbox 360 Title")
+		case (b'00002000'):
+			print("IPTV Pause Buffer")
+		case (b'00004000'):
+			print("Installed Game")
+		case (b'00005000'):
+			print("Xbox Original Game")
+		case (b'00007000'):
+			print("Game on Demand")
+		case (b'00009000'):
+			print("Avatar Item")
+		case (b'00010000'):
+			print("Profile")
+		case (b'00020000'):
+			print("Gamer Picture")
+		case (b'00030000'):
+			print("Theme")
+		case (b'00040000'):
+			print("Cache File")
+		case (b'00050000'):
+			print("Storage Download")
+		case (b'00060000'):
+			print("Xbox Saved Game")
+		case (b'00070000'):
+			print("Xbox Download")
+		case (b'00080000'):
+			print("Game Demo")
+		case (b'00090000'):
+			print("Video")
+		case (b'000A0000'):
+			print("Game Title")
+		case (b'000B0000'):
+			print("Installer")
+		case (b'000C0000'):
+			print("Game Trailer")
+		case (b'000D0000'):
+			print("Arcade Title")
+		case (b'000E0000'):
+			print("XNA")
+		case (b'000F0000'):
+			print("License Store")
+		case (b'01000000'):
+			print("Movie")
+		case (b'02000000'):
+			print("TV")
+		case (b'03000000'):
+			print("Music Video")
+		case (b'04000000'):
+			print("Game Video")
+		case (b'05000000'):
+			print("Podcast Video")
+		case (b'06000000'):
+			print("Viral Video")
+		case (b'20000000'):
+			print("Community Game")
+	return
 
 def XEXHandler():
 	# First 4 bytes get ate. idk why
@@ -85,7 +162,19 @@ def XEXHandler():
 			File.seek(24)
 			print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
 			File.seek(28)
+			print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')}")
+			File.seek(36)
 			print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
+			File.seek(40)
+			print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')}")
+			File.seek(48)
+			print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
+			File.seek(52)
+			print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')}")
+			File.seek(60)
+			print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
+			File.seek(64)
+			print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')}")
 
 
 
