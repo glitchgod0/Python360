@@ -4,7 +4,7 @@ import binascii
 
 print("Python360 Test by Glitchgod")
 
-DEBUG = True
+DEBUG = False
 
 
 def ConHandler():
@@ -22,21 +22,24 @@ def LiveHandler():
 def XEXHandler():
 	print("XEX Header:")
 
+	
 	# First 4 bytes get ate. idk why
 	File.seek(7)
 	Flags = binascii.hexlify(File.read(1), b' ')  # Flags
-	File.seek(8)
-	print(f"{binascii.hexlify(File.read(4), b' ')} PE Data Offset") # PE Data Offset
-	File.seek(12)
-	print(f"{binascii.hexlify(File.read(4), b' ')} Reserved") # Reserved
-	File.seek(16)
-	print(f"{binascii.hexlify(File.read(4), b' ')} Security Info Offset") # Security Info Offset
-	File.seek(23)
-	OptionalHeaderCount = binascii.hexlify(File.read(1), b' ')
-	File.seek(24)
-	print(f"{binascii.hexlify(File.read(4), b' ')}")
-	File.seek(28)
-	print(f"{binascii.hexlify(File.read(4), b' ')}")
+	if DEBUG == True:
+		File.seek(8)
+		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} PE Data Offset") # PE Data Offset
+		File.seek(12)
+		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} Reserved") # Reserved
+		File.seek(16)
+		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} Security Info Offset") # Security Info Offset
+		File.seek(23)
+		OptionalHeaderCount = binascii.hexlify(File.read(1), b' ')
+		print(f"[DEBUG] {OptionalHeaderCount}")
+		File.seek(24)
+		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
+		File.seek(28)
+		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
 
 	print("Properly Parsed Data:")
 
@@ -59,8 +62,6 @@ def XEXHandler():
 	else:
 		print("Unknown Flag")
 
-	print(f"Optional Header Count: {OptionalHeaderCount}")
-
 
 
 
@@ -77,21 +78,19 @@ if len(sys.argv) != 1: #Check if theres arguments
 		if DEBUG == True:
 			print(f"[DEBUG] File Type: {FileType}") #print file type
 
-			if FileType == b'CON ':
-				print("CON File")
-				ConHandler()
-			elif FileType == b'LIVE':
-				print("LIVE File")
-				LIVE = True
-				LiveHandler()
-			elif FileType == b'XEX2':
-				print("XEX File")
-				XEX2 = True
-				XEXHandler()
-			else:
-				print("Not Recognized")
-
-
+		if FileType == b'CON ':
+			print("CON File")
+			ConHandler()
+		elif FileType == b'LIVE':
+			print("LIVE File")
+			LIVE = True
+			LiveHandler()
+		elif FileType == b'XEX2':
+			print("XEX File")
+			XEX2 = True
+			XEXHandler()
+		else:
+			print("Not Recognized")
 
 		File.close()	
 else:
