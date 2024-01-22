@@ -4,7 +4,7 @@ import binascii
 
 print("Python360 Test by Glitchgod\n")
 
-DEBUG = True
+DEBUG = False
 
 
 def ConHandler():
@@ -167,9 +167,12 @@ def ContentTypeHandler():
 	return
 
 def XEXHandler():
-	print("XEX2 file support is very basic and not ready. Set DEBUG to True in the script to show the basic info.\n")
+
+	if DEBUG == False:
+		print("XEX2 file support is very basic and not ready. Set DEBUG to True in the script to show the basic info.\n")
 
 	if DEBUG == True:
+		print("XEX File:")
 		# First 4 bytes get ate. idk why
 		File.seek(7)
 		Flags = binascii.hexlify(File.read(1), b' ')  # Flags
@@ -229,7 +232,7 @@ if len(sys.argv) != 1: #Check if theres arguments
 	FilePath = sys.argv[1] #set FilePath to Argument
 	if os.path.exists(FilePath): #Check if FilePath is actually a valid path
 		if DEBUG == True:
-			print(f"\n[DEBUG] File Path = {FilePath}") #print FilePath
+			print(f"[DEBUG] File Path = {FilePath}") #print FilePath
 
 		File = open(FilePath, "rb+") #Open File
 		FileType = File.read(4) #Read the first 4 bytes
@@ -242,15 +245,14 @@ if len(sys.argv) != 1: #Check if theres arguments
 			ConHandler()
 		elif FileType == b'LIVE':
 			print("LIVE File:")
-			LIVE = True
 			LiveHandler()
 		elif FileType == b'XEX2':
-			print("XEX File:")
-			XEX2 = True
 			XEXHandler()
 		else:
 			print("Not Recognized")
 
 		File.close()	
+	else:
+		print("Invalid file path given")
 else:
 	print("No file path argument given.")
