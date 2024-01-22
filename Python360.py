@@ -52,11 +52,46 @@ def LiveHandler():
 	print(f"Metadata Version: {binascii.hexlify(File.read(1))}")
 	File.seek(836)
 	ContentTypeHandler()
+	File.seek(844)
+	print(f"Content Size: {binascii.hexlify(File.read(8))}")
+	File.seek(852)
+
+	File.seek(1041)
+	TitleName = File.read(80)
+	TitleNameOut = TitleName.decode('utf-8')
+	print(f"Display Name: {TitleNameOut}")
+
+	File.seek(5777)
+	TitleName = File.read(80)
+	TitleNameOut = TitleName.decode('utf-8')
+	print(f"Title Name: {TitleNameOut}")
+	#TODO: Option to read all locales
+
+	File.seek(3345)
+	TitleName = File.read(300)
+	TitleNameOut = TitleName.decode('utf-8')
+	print(f"Display Description: {TitleNameOut}")
+	#TODO: Option to read all locales
+
+	File.seek(864)
+	print(f"Title ID: {binascii.hexlify(File.read(4))}")
+
+	File.seek(5649)
+	TitleName = File.read(80)
+	TitleNameOut = TitleName.decode('utf-8')
+	print(f"Publisher Name: {TitleNameOut}")
+
+	print(f"Media ID: {binascii.hexlify(File.read(4))}")
 
 	File.seek(556)
 	
 	if DEBUG == True:
-		print(f"[DEBUG]Licensing Data: {binascii.hexlify(File.read(100))}")
+		print(f"\n[DEBUG]Licensing Data: {binascii.hexlify(File.read(8))}")
+		File.seek(564)
+		print(f"[DEBUG]Licensing Data: {binascii.hexlify(File.read(4))}")
+		File.seek(568)
+		print(f"[DEBUG]Licensing Data: {binascii.hexlify(File.read(4))}")
+
 
 def ContentTypeHandler():
 	ContentTypeMatch = binascii.hexlify(File.read(4))
