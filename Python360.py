@@ -5,7 +5,7 @@ import binascii
 print("Python360 Test by Glitchgod\n")
 
 DEBUG = False
-
+PrintAll = False
 
 def ByteGrabber(ByteNum, ReadNum, PrintName): # this function is here because i dont wanna do basic math manually
 	File.seek(ByteNum)
@@ -62,7 +62,7 @@ def ConHandler():
 def STFSHandler():
 	print("\nSTFS Info:")
 	
-	if DEBUG == True: #TODO: Replace with Arg
+	if ArgType == "-a":
 		ByteGrabber(556, 100, "Licensing Data:")
 		ByteGrabber(812, 14, "Content ID/Header SHA1 Hash:")
 		ByteGrabber(832, 14, "Entry ID")
@@ -234,40 +234,52 @@ def XEXHandler():
 		File.seek(64)
 		print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')}")
 
-
-
-
-if len(sys.argv) != 1: #Check if theres arguments
-	FilePath = sys.argv[1] #set FilePath to Argument
-	if os.path.exists(FilePath): #Check if FilePath is actually a valid path
-		if DEBUG == True:
-			print(f"[DEBUG] File Path = {FilePath}") #print FilePath
-
-		File = open(FilePath, "rb+") #Open File
-		FileType = File.read(4) #Read the first 4 bytes
-
-		if DEBUG == True:
-			print(f"[DEBUG] File Type: {FileType}\n") #print file type
-
-		if FileType == b'CON ':
+def TypeHandler():
+	if FileType == b'CON ':
 			print("CON File")
 			CheckLIVEOnly = False
 			ConHandler()
-		elif FileType == b'LIVE':
+	elif FileType == b'LIVE':
 			print("LIVE File")
 			CheckLIVEOnly = True
 			STFSHandler()
-		elif FileType == b'PIRS':
+	elif FileType == b'PIRS':
 			print("PIRS File")
 			CheckLIVEOnly = True
 			STFSHandler()
-		elif FileType == b'XEX2 File':
+	elif FileType == b'XEX2 File':
 			XEXHandler()
-		else:
-			print("Not Recognized")
-
-		File.close()	
 	else:
-		print("Invalid file path given")
+			print("Not Recognized")
+			File.close()
+
+if len(sys.argv) != 1: #Check if theres arguments
+	FilePath = sys.argv[1] #set FilePath to Argument
+
+	if len(sys.argv) == 3:
+		match sys.argv[2]:
+			case "-a":
+				ArgType = "-a"
+			case "-dbg":
+				DEBUG = True
+				ArgType = "-a"
+			case default:
+				sys.exit("Invalid argument.")
+		if os.path.exists(FilePath): #Check if FilePath is actually a valid path
+			File = open(FilePath, "rb+") #Open File
+			FileType = File.read(4) #Read the first 4 bytes
+			TypeHandler()
+		else:
+			print("Invalid file path given")		
+	else:
+		ArgType = 0
+
+		if os.path.exists(FilePath): #Check if FilePath is actually a valid path
+			File = open(FilePath, "rb+") #Open File
+			FileType = File.read(4) #Read the first 4 bytes
+			TypeHandler()
+		else:
+			print("Invalid file path given")
 else:
-	print("No file path argument given.")
+	print("No arguments given.\nProper Usage: Python360.py [File-Path] [Optional-Args]\n-a   - Prints full STFS info.")
+	print("-dbg - Shows various debug info and enables early XEX support. this automatically does -a.")
