@@ -4,7 +4,7 @@ Very basic Python script that aims to get info from Xbox 360 file formats.
 ## Supported Formats
 - CON
 - LIVE/PIRS
-- XEX2 - Very early, not much info is displayed. Set DEBUG to True in the script to allow this feature.
+- XEX2 - Very early, not much info is displayed. Use -dbg to allow show the work in progress state
 
 ## Issues
 Since this is my first orignal project the code is quite messy, I will be aiming to clean the spaghetti soon.
