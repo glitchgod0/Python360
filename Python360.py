@@ -4,7 +4,7 @@ import binascii
 
 print("Python360 Test by Glitchgod\n")
 
-DEBUG = False
+DEBUG = True
 
 
 def ConHandler():
@@ -15,7 +15,24 @@ def ConHandler():
 	# verify the content signature against the console certificate's public key" - Emma
 
 	LiveHandler()
+	File.seek(4)
+	CONPublicKeyCertSize = binascii.hexlify(File.read(2))
+	File.seek(6)
+	CONCertOwnerConsoleID = binascii.hexlify(File.read(5))
+	File.seek(11)
+	CONCertOwnerConsolePart = {File.read(11)}
+	File.seek(32)
+	CONCertGenerationDate = {File.read(8)}
+	File.seek(40)
+	CONPublicExpo = binascii.hexlify(File.read(4))
+	File.seek(44)
+	CONPublicModu = binascii.hexlify(File.read(80))
+	File.seek(172)
+	CONCertSig = binascii.hexlify(File.read(100))
+	File.seek(428)
+	CONSignature = binascii.hexlify(File.read(80))
 
+	print("\nCertificate Info:")
 	File.seek(31)
 	if File.read(1) == b'\x02':
 		print("Retail")
@@ -24,25 +41,23 @@ def ConHandler():
 	else:
 		print("Unknown signing")
 
-	print("\nCertificate Info:")
-	File.seek(4)
-	print(f"Public Key Certificate Size: {binascii.hexlify(File.read(2))}") 
-	File.seek(6)
-	print(f"Certificate Owner Console ID: {binascii.hexlify(File.read(5))}")
-	File.seek(11)
-	print(f"Certificate Owner Console Part Number: {File.read(11)}")
-	File.seek(32)
-	print(f"Certificate Date of Generation: {File.read(8)}")
-	File.seek(40)
-	print(f"Public Exponent: {binascii.hexlify(File.read(4))}")
-	#answer = input("\nPrint Large info? [Y/N]: ")
-	#if answer == "Y" or "y":
-	File.seek(44)
-	print(f"Public Modulus: {binascii.hexlify(File.read(80))}")
-	File.seek(172)
-	print(f"Certificate Signature: {binascii.hexlify(File.read(100))}")
-	File.seek(428)
-	print(f"Signature: {binascii.hexlify(File.read(80))}")
+	CONPublicKeyCertSize = (repr(CONPublicKeyCertSize)[2:][:4])
+	CONCertOwnerConsoleID = (repr(CONCertOwnerConsoleID)[2:][:10])
+	CONCertOwnerConsolePart = (repr(CONCertOwnerConsolePart)[3:14])
+	CONCertGenerationDate = (repr(CONCertGenerationDate)[3:11])
+	CONPublicExpo = (repr(CONPublicExpo)[2:][:8])
+	CONPublicModu = (repr(CONPublicModu)[2:][:160])
+	CONCertSig = (repr(CONCertSig)[2:][:200])
+	CONSignature = (repr(CONSignature)[2:][:160])
+
+	print(f"Public Key Certificate Size: {CONPublicKeyCertSize}")
+	print(f"Certificate Owner Console ID: {CONCertOwnerConsoleID}")
+	print(f"Certificate Owner Console Part: {CONCertOwnerConsolePart}")
+	print(f"Certificate Owner Console Date: {CONCertGenerationDate}")
+	print(f"Public Exponent: {CONPublicExpo}")
+	print(f"Public Modulus: {CONPublicModu}")
+	print(f"Certificate Signature: {CONCertSig}")
+	print(f"Signature: {CONSignature}")
 
 
 	#answer = input("\nPrint Large info? [Y/N]: ")
@@ -241,15 +256,15 @@ if len(sys.argv) != 1: #Check if theres arguments
 			print(f"[DEBUG] File Type: {FileType}\n") #print file type
 
 		if FileType == b'CON ':
-			print("CON File:")
+			print("CON File")
 			ConHandler()
 		elif FileType == b'LIVE':
-			print("LIVE File:")
+			print("LIVE File")
 			LiveHandler()
 		elif FileType == b'PIRS':
 			print("PIRS File:")
 			LiveHandler()
-		elif FileType == b'XEX2':
+		elif FileType == b'XEX2 File':
 			XEXHandler()
 		else:
 			print("Not Recognized")
