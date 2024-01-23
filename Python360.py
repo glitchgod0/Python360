@@ -4,7 +4,7 @@ import binascii
 
 print("Python360 Test by Glitchgod\n")
 
-DEBUG = True
+DEBUG = False
 
 
 def ConHandler():
@@ -14,7 +14,6 @@ def ConHandler():
 	# you verify the console certificate against microsoft's master key and then
 	# verify the content signature against the console certificate's public key" - Emma
 
-	LiveHandler()
 	File.seek(4)
 	CONPublicKeyCertSize = (repr(binascii.hexlify(File.read(2)))[2:][:4])
 	File.seek(6)
@@ -50,48 +49,48 @@ def ConHandler():
 	print(f"Certificate Signature: {CONCertSig}")
 	print(f"Signature: {CONSignature}")
 
-
+	STFSHandler()
 	#answer = input("\nPrint Large info? [Y/N]: ")
 	#if answer == "Y" or "y":
 
 
-def LiveHandler():
+def STFSUTFHandler(seek, readbytes, Name, NameOut, PrintName):
+	File.seek(seek)
+	Name = File.read(readbytes)
+	NameOut = Name.decode('utf-8')
+	print(PrintName, NameOut)
+
+def STFSHandler():
+	print("\nSTFS Info:")
+
 	File.seek(4)
-	print(f"Package Signature: {binascii.hexlify(File.read(100))}")
+	PackageSignature = (repr(binascii.hexlify(File.read(100)))[2:202])
+
 	File.seek(843)
-	print(f"Metadata Version: {binascii.hexlify(File.read(1))}")
-	File.seek(836)
+	MetadataVer = (repr(binascii.hexlify(File.read(1)))[2:4])
+
+	STFSUTFHandler(5777, 80, "TitleName", "TitleNameOut", "Title Name:")
+
+	STFSUTFHandler(1041, 80, "DisplayName", "DisplayNameOut", "Display Name:")
+
+	STFSUTFHandler(3345, 300, "DescName", "DescNameOut", "Display Description:")
+
+	STFSUTFHandler(5649, 80, "PublishName", "PublishNameOut", "Publisher Name:")
+
 	ContentTypeHandler()
-
-	File.seek(5777)
-	TitleName = File.read(80)
-	TitleNameOut = TitleName.decode('utf-8')
-	print(f"Title Name: {TitleNameOut}")
-	File.seek(1041)
-	TitleName = File.read(80)
-	TitleNameOut = TitleName.decode('utf-8')
-	print(f"Display Name: {TitleNameOut}")
-	#TODO: Option to read all locales
-
-	File.seek(3345)
-	TitleName = File.read(300)
-	TitleNameOut = TitleName.decode('utf-8')
-	print(f"Display Description: {TitleNameOut}")
-	#TODO: Option to read all locales
-
 	File.seek(864)
-	print(f"Title ID: {binascii.hexlify(File.read(4))}")
-
-	File.seek(5649)
-	TitleName = File.read(80)
-	TitleNameOut = TitleName.decode('utf-8')
-	print(f"Publisher Name: {TitleNameOut}")
+	TitleID = (repr(binascii.hexlify(File.read(4)))[2:10])
 
 	File.seek(852)
-	print(f"Media ID: {binascii.hexlify(File.read(4))}")
+	MediaID = (repr(binascii.hexlify(File.read(4)))[2:10])
 
 	File.seek(5905)
-	print(f"Transfer Flag: {binascii.hexlify(File.read(1))}")
+	TransferFlags = (repr(binascii.hexlify(File.read(1)))[2:4])
+
+	print(f"Metadata Version: {MetadataVer}")
+	print(f"Media ID: {MediaID}")
+	print(f"Transfer Flag: {TransferFlags}")
+	print(f"Package Signature: {PackageSignature}")
 
 	if DEBUG == True:
 		File.seek(556)
@@ -106,6 +105,7 @@ def LiveHandler():
 
 
 def ContentTypeHandler():
+	File.seek(836)
 	ContentTypeMatch = binascii.hexlify(File.read(4))
 	match ContentTypeMatch:
 		case (b'00000001'):
@@ -247,13 +247,14 @@ if len(sys.argv) != 1: #Check if theres arguments
 			print(f"[DEBUG] File Type: {FileType}\n") #print file type
 
 		if FileType == b'CON ':
+			print("CON File")
 			ConHandler()
 		elif FileType == b'LIVE':
 			print("LIVE File")
-			LiveHandler()
+			STFSHandler()
 		elif FileType == b'PIRS':
-			print("PIRS File:")
-			LiveHandler()
+			print("PIRS File")
+			STFSHandler()
 		elif FileType == b'XEX2 File':
 			XEXHandler()
 		else:
