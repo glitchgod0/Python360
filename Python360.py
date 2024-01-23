@@ -7,29 +7,25 @@ print("Python360 Test by Glitchgod\n")
 DEBUG = False
 
 
+def ByteGrabber(ByteNum, ReadNum, PrintName): # this function is here because i dont wanna do basic math manually
+	File.seek(ByteNum)
+	EndCrop = ReadNum + ReadNum + 2
+	Name = (repr(binascii.hexlify(File.read(ReadNum)))[2:EndCrop])
+	print(PrintName, Name)
+
+
+def STFSUTFHandler(seek, readbytes, Name, NameOut, PrintName):
+	File.seek(seek)
+	Name = File.read(readbytes)
+	NameOut = Name.decode('utf-8')
+	print(PrintName, NameOut)
+
 def ConHandler():
 
 	#TODO: look into the signature
 	#"the signature is PKCS1 in big-endian format if you want to verify that
 	# you verify the console certificate against microsoft's master key and then
 	# verify the content signature against the console certificate's public key" - Emma
-
-	File.seek(4)
-	CONPublicKeyCertSize = (repr(binascii.hexlify(File.read(2)))[2:][:4])
-	File.seek(6)
-	CONCertOwnerConsoleID = (repr(binascii.hexlify(File.read(5)))[2:][:10])
-	File.seek(11)
-	CONCertOwnerConsolePart = (repr({File.read(11)})[3:14])
-	File.seek(32)
-	CONCertGenerationDate = (repr({File.read(8)})[3:11])
-	File.seek(40)
-	CONPublicExpo = (repr(binascii.hexlify(File.read(4)))[2:][:8])
-	File.seek(44)
-	CONPublicModu = (repr(binascii.hexlify(File.read(80)))[2:][:160])
-	File.seek(172)
-	CONCertSig = (repr(binascii.hexlify(File.read(100)))[2:][:200])
-	File.seek(428)
-	CONSignature = (repr(binascii.hexlify(File.read(80)))[2:][:160])
 
 	print("\nCON Info:")
 	File.seek(31)
@@ -40,67 +36,74 @@ def ConHandler():
 	else:
 		print("Unknown signing")
 
-	print(f"Public Key Certificate Size: {CONPublicKeyCertSize}")
-	print(f"Certificate Owner Console ID: {CONCertOwnerConsoleID}")
-	print(f"Certificate Owner Console Part: {CONCertOwnerConsolePart}")
-	print(f"Certificate Owner Console Date: {CONCertGenerationDate}")
-	print(f"Public Exponent: {CONPublicExpo}")
-	print(f"Public Modulus: {CONPublicModu}")
-	print(f"Certificate Signature: {CONCertSig}")
-	print(f"Signature: {CONSignature}")
+	ByteGrabber(4, 2, "Public Key Certificate Size:")
+	ByteGrabber(6, 5, "Certificate Owner Console ID:")
+
+	File.seek(11)
+	CONCertOwnerConsolePart = (repr({File.read(11)})[3:14])
+	print(f"Certificate Console Part: {CONCertOwnerConsolePart}")
+
+	File.seek(32)
+	CONCertGenerationDate = (repr({File.read(8)})[3:11])
+	print(f"Certificate Generation Date: {CONCertGenerationDate}")
+
+
+	ByteGrabber(40, 4, "Public Exponent:")
+	ByteGrabber(44, 80, "Public Modulus")
+	ByteGrabber(172, 100, "Certificate Signature")
+	ByteGrabber(428, 80, "Signature:")
 
 	STFSHandler()
 	#answer = input("\nPrint Large info? [Y/N]: ")
 	#if answer == "Y" or "y":
 
 
-def STFSUTFHandler(seek, readbytes, Name, NameOut, PrintName):
-	File.seek(seek)
-	Name = File.read(readbytes)
-	NameOut = Name.decode('utf-8')
-	print(PrintName, NameOut)
 
 def STFSHandler():
 	print("\nSTFS Info:")
+	
+	if DEBUG == True: #TODO: Replace with Arg
+		ByteGrabber(556, 100, "Licensing Data:")
+		ByteGrabber(812, 14, "Content ID/Header SHA1 Hash:")
+		ByteGrabber(832, 14, "Entry ID")
+		ContentTypeHandler() #Content Type
+		ByteGrabber(840, 4, "Metadata Version:")
+		ByteGrabber(844, 8, "Content Size")
+		ByteGrabber(852, 4, "Media ID")
+		ByteGrabber(856, 4, "Version:")
+		ByteGrabber(860, 4, "Base Version:")
+		ByteGrabber(864, 4, "Title ID:")
+		ByteGrabber(868, 1, "Platfrom:")
+		ByteGrabber(869, 1, "Executable Type:")
+		ByteGrabber(870, 1, "Disc Number")
+		ByteGrabber(871, 1, "Disc In Set:")
+		ByteGrabber(872, 4, "Save Game ID:")
+		ByteGrabber(876, 5, "Console ID:")
+		ByteGrabber(881, 8, "Profile ID:")
+		ByteGrabber(889, 1, "Volume Descriptor Size:")
+		ByteGrabber(890, 24, "FIle System Volume Descriptor:")
+		ByteGrabber(925, 4, "Data File Count:")
+		ByteGrabber(929, 8, "Data File Combined Size:")
+		ByteGrabber(937, 8, "Reserved:")
+		ByteGrabber(945, 4, "Padding:")
+		ByteGrabber(1021, 8, "Device ID:")
+		STFSUTFHandler(1041, 80, "DisplayName", "DisplayNameOut", "Display Name:")
+		STFSUTFHandler(3345, 300, "DescName", "DescNameOut", "Display Description:")
+		STFSUTFHandler(5649, 80, "PublishName", "PublishNameOut", "Publisher Name:")
+		STFSUTFHandler(5777, 80, "TitleName", "TitleNameOut", "Title Name:")
+		ByteGrabber(5905, 4, "Transfer Flags:")
+		ByteGrabber(5906, 8, "Thumbnail Image Size:")
+		ByteGrabber(5910, 8, "Title Thumbnail Image Size:")
+		ByteGrabber(5914, 0, "Thumbnail Image, 16384. Printing Not Ready")
+		ByteGrabber(22298, 0, "Title Thumbnail 16384. Printing Not Ready")
+	else:
+		STFSUTFHandler(1041, 80, "DisplayName", "DisplayNameOut", "Display Name:")
+		STFSUTFHandler(3345, 300, "DescName", "DescNameOut", "Display Description:")
+		STFSUTFHandler(5777, 80, "TitleName", "TitleNameOut", "Title Name:")
+		ByteGrabber(864, 4, "Title ID:")
+		ContentTypeHandler()
+		ByteGrabber(5905, 4, "Transfer Flags:")
 
-	File.seek(4)
-	PackageSignature = (repr(binascii.hexlify(File.read(100)))[2:202])
-
-	File.seek(843)
-	MetadataVer = (repr(binascii.hexlify(File.read(1)))[2:4])
-
-	STFSUTFHandler(5777, 80, "TitleName", "TitleNameOut", "Title Name:")
-
-	STFSUTFHandler(1041, 80, "DisplayName", "DisplayNameOut", "Display Name:")
-
-	STFSUTFHandler(3345, 300, "DescName", "DescNameOut", "Display Description:")
-
-	STFSUTFHandler(5649, 80, "PublishName", "PublishNameOut", "Publisher Name:")
-
-	ContentTypeHandler()
-	File.seek(864)
-	TitleID = (repr(binascii.hexlify(File.read(4)))[2:10])
-
-	File.seek(852)
-	MediaID = (repr(binascii.hexlify(File.read(4)))[2:10])
-
-	File.seek(5905)
-	TransferFlags = (repr(binascii.hexlify(File.read(1)))[2:4])
-
-	print(f"Metadata Version: {MetadataVer}")
-	print(f"Media ID: {MediaID}")
-	print(f"Transfer Flag: {TransferFlags}")
-	print(f"Package Signature: {PackageSignature}")
-
-	if DEBUG == True:
-		File.seek(556)
-		print(f"\n[DEBUG] Licensing Data: {binascii.hexlify(File.read(8))}")
-		File.seek(564)
-		print(f"[DEBUG] Licensing Data: {binascii.hexlify(File.read(4))}")
-		File.seek(568)
-		print(f"[DEBUG] Licensing Data: {binascii.hexlify(File.read(4))}")
-		File.seek(844)
-		print(f"[DEBUG] Content Size: {binascii.hexlify(File.read(8))}")
 	return
 
 
@@ -248,12 +251,15 @@ if len(sys.argv) != 1: #Check if theres arguments
 
 		if FileType == b'CON ':
 			print("CON File")
+			CheckLIVEOnly = False
 			ConHandler()
 		elif FileType == b'LIVE':
 			print("LIVE File")
+			CheckLIVEOnly = True
 			STFSHandler()
 		elif FileType == b'PIRS':
 			print("PIRS File")
+			CheckLIVEOnly = True
 			STFSHandler()
 		elif FileType == b'XEX2 File':
 			XEXHandler()
