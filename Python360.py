@@ -16,23 +16,23 @@ def ConHandler():
 
 	LiveHandler()
 	File.seek(4)
-	CONPublicKeyCertSize = binascii.hexlify(File.read(2))
+	CONPublicKeyCertSize = (repr(binascii.hexlify(File.read(2)))[2:][:4])
 	File.seek(6)
-	CONCertOwnerConsoleID = binascii.hexlify(File.read(5))
+	CONCertOwnerConsoleID = (repr(binascii.hexlify(File.read(5)))[2:][:10])
 	File.seek(11)
-	CONCertOwnerConsolePart = {File.read(11)}
+	CONCertOwnerConsolePart = (repr({File.read(11)})[3:14])
 	File.seek(32)
-	CONCertGenerationDate = {File.read(8)}
+	CONCertGenerationDate = (repr({File.read(8)})[3:11])
 	File.seek(40)
-	CONPublicExpo = binascii.hexlify(File.read(4))
+	CONPublicExpo = (repr(binascii.hexlify(File.read(4)))[2:][:8])
 	File.seek(44)
-	CONPublicModu = binascii.hexlify(File.read(80))
+	CONPublicModu = (repr(binascii.hexlify(File.read(80)))[2:][:160])
 	File.seek(172)
-	CONCertSig = binascii.hexlify(File.read(100))
+	CONCertSig = (repr(binascii.hexlify(File.read(100)))[2:][:200])
 	File.seek(428)
-	CONSignature = binascii.hexlify(File.read(80))
+	CONSignature = (repr(binascii.hexlify(File.read(80)))[2:][:160])
 
-	print("\nCertificate Info:")
+	print("\nCON Info:")
 	File.seek(31)
 	if File.read(1) == b'\x02':
 		print("Retail")
@@ -40,15 +40,6 @@ def ConHandler():
 		print("Devkit")
 	else:
 		print("Unknown signing")
-
-	CONPublicKeyCertSize = (repr(CONPublicKeyCertSize)[2:][:4])
-	CONCertOwnerConsoleID = (repr(CONCertOwnerConsoleID)[2:][:10])
-	CONCertOwnerConsolePart = (repr(CONCertOwnerConsolePart)[3:14])
-	CONCertGenerationDate = (repr(CONCertGenerationDate)[3:11])
-	CONPublicExpo = (repr(CONPublicExpo)[2:][:8])
-	CONPublicModu = (repr(CONPublicModu)[2:][:160])
-	CONCertSig = (repr(CONCertSig)[2:][:200])
-	CONSignature = (repr(CONSignature)[2:][:160])
 
 	print(f"Public Key Certificate Size: {CONPublicKeyCertSize}")
 	print(f"Certificate Owner Console ID: {CONCertOwnerConsoleID}")
@@ -256,7 +247,6 @@ if len(sys.argv) != 1: #Check if theres arguments
 			print(f"[DEBUG] File Type: {FileType}\n") #print file type
 
 		if FileType == b'CON ':
-			print("CON File")
 			ConHandler()
 		elif FileType == b'LIVE':
 			print("LIVE File")
