@@ -178,7 +178,7 @@ def ContentTypeHandler():
 def XEXHandler():
 
 	if DEBUG == False:
-		print("XEX2 file support is very basic and not ready. Set DEBUG to True in the script to show the basic info.\n")
+		print("XEX2 file support is very basic and not ready. Do -dbg to see early progress.\n")
 
 	if DEBUG == True:
 		print("XEX File:")
@@ -247,16 +247,18 @@ def TypeHandler():
 			print("PIRS File")
 			CheckLIVEOnly = True
 			STFSHandler()
-	elif FileType == b'XEX2 File':
+	elif FileType == b'XEX2':
 			XEXHandler()
 	else:
 			print("Not Recognized")
 			File.close()
 
 if len(sys.argv) != 1: #Check if theres arguments
+
 	FilePath = sys.argv[1] #set FilePath to Argument
 
 	if len(sys.argv) == 3:
+
 		match sys.argv[2]:
 			case "-a":
 				ArgType = "-a"
@@ -265,13 +267,18 @@ if len(sys.argv) != 1: #Check if theres arguments
 				ArgType = "-a"
 			case default:
 				sys.exit("Invalid argument.")
+
 		if os.path.exists(FilePath): #Check if FilePath is actually a valid path
+
 			File = open(FilePath, "rb+") #Open File
 			FileType = File.read(4) #Read the first 4 bytes
 			TypeHandler()
+
 		else:
-			print("Invalid file path given")		
+			print("Invalid file path given")	
+
 	else:
+
 		ArgType = 0
 
 		if os.path.exists(FilePath): #Check if FilePath is actually a valid path
@@ -280,6 +287,7 @@ if len(sys.argv) != 1: #Check if theres arguments
 			TypeHandler()
 		else:
 			print("Invalid file path given")
+
 else:
 	print("No arguments given.\nProper Usage: Python360.py [File-Path] [Optional-Args]\n-a   - Prints full STFS info.")
 	print("-dbg - Shows various debug info and enables early XEX support. this automatically does -a.")
