@@ -1,4 +1,4 @@
-# Python360 (Working Title
+# Python360 (Working Title)
 Very basic Python script that aims to get info from Xbox 360 file formats. 
 
 ## Supported Formats
