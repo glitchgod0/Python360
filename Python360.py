@@ -180,13 +180,40 @@ def XEXHandler():
 	if DEBUG == False:
 		print("XEX2 file support is very basic and not ready. Do -dbg to see early progress.\n")
 
-	if DEBUG == True:
+	else:
 		print("XEX File:")
-		# First 4 bytes get ate. idk why
+
+		File.seek(20)
+		DecimalHeaderCount = int((repr(binascii.hexlify(File.read(4)))[2:10]), 16)
+		print("Optional Header Decimal =", DecimalHeaderCount)
+
+		TypeDataStruct = []
+		ValueDataStruct = []
+
+		InitialTypeSeek = 24 # This gets the header ID
+		for x in range(DecimalHeaderCount):
+			File.seek(InitialTypeSeek)
+			ReadOut = (repr(binascii.hexlify(File.read(4)))[2:10])
+			InitialTypeSeek = InitialTypeSeek + 8
+			TypeDataStruct.append(ReadOut)
+
+		InitialTypeSeek = 28 # This gets the header Value
+		for x in range(DecimalHeaderCount):
+			File.seek(InitialTypeSeek)
+			ReadOut = (repr(binascii.hexlify(File.read(4)))[2:10])
+			InitialTypeSeek = InitialTypeSeek + 8
+			ValueDataStruct.append(ReadOut)
+
+		TestPrint = 0 # This displays the results of both
+		for x in range(DecimalHeaderCount):
+			print(TypeDataStruct[TestPrint], ValueDataStruct[TestPrint])
+			TestPrint = TestPrint + 1
+
+
+
 		File.seek(7)
 		Flags = binascii.hexlify(File.read(1), b' ')  # Flags
 		
-		print("Parsed Data:")
 		#make into a match case
 		if Flags == b'00':
 			print("Title Module")
@@ -206,33 +233,6 @@ def XEXHandler():
 			print("User Mode")
 		else:
 			print("Unknown Flag")
-
-	
-		File.seek(8)
-		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} PE Data Offset") # PE Data Offset
-		File.seek(12)
-		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} Reserved") # Reserved
-		File.seek(16)
-		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')} Security Info Offset") # Security Info Offset
-		File.seek(23)
-		OptionalHeaderCount = binascii.hexlify(File.read(1), b' ')
-		print(f"[DEBUG] Header Count: {OptionalHeaderCount}")
-		File.seek(24)
-		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
-		File.seek(28)
-		print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')}")
-		File.seek(36)
-		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
-		File.seek(40)
-		print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')}")
-		File.seek(48)
-		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
-		File.seek(52)
-		print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')}")
-		File.seek(60)
-		print(f"[DEBUG] {binascii.hexlify(File.read(4), b' ')}")
-		File.seek(64)
-		print(f"[DEBUG] {binascii.hexlify(File.read(8), b' ')}")
 
 def TypeHandler():
 	if FileType == b'CON ':
