@@ -176,74 +176,75 @@ def ContentTypeHandler():
 	return
 
 def HeaderIDHandler(LookAt):
-	#LookUpValue = 
-	match TypeDataStruct[LookAt]:
-		case ('000002ff'):
-			print("Resource Info")
-		case ('000003ff'):
-			print("Base File Format")
-		case ('00000405'):
-			print("Base Reference")
-		case ('000005ff'):
-			print("Delta Patch Descriptor")
-		case ('000080ff'):
-			print("Bounding Path")
-		case ('00008105'):
-			print("Device ID")
-		case ('00010001'):
-			print("Original Base Address")
-		case ('00010100'):
-			print("Entry Point")
-		case ('00010201'):
-			print("Image Base Address")
-		case ('000103ff'):
-			print("Import Libraries")
-		case ('00018002'):
-			print("Checksum Timestamp")
-		case ('00018102'):
-			print("Enabled For Callcap")
-		case ('00018200'):
-			print("Enabled For Fastcap")
-		case ('000183ff'):
-			print("Original PE Name")
-		case ('000200ff'):
-			print("Static Libraries")
-		case ('00020104'):
-			print("TLS Info")
-		case ('00020200'):
-			print("Default Stack Size")
-		case ('00020301'):
-			print("Default Filesystem Cache Size")
-		case ('00020401'):
-			print("Default Heap Size")
-		case ('00028002'):
-			print("Page Heap Size and Flags")
-		case ('00030000'):
-			print("System Flags")
-		case ('00040006'):
-			print("Execution ID")
-		case ('000401ff'):
-			print("Service ID List")
-		case ('00040201'):
-			print("Title Workspace Size")
-		case ('00040310'):
-			print("Game Ratings")
-		case ('00040404'):
-			print("LAN Key")
-		case ('000405ff'):
-			print("Xbox 360 Logo")
-		case ('000406ff'):
-			print("Multidisc Media IDs")
-		case ('000407ff'):
-			print("Alternate Title IDs")
-		case ('00040801'):
-			print("Additional Title Memory")
-		case ('00e10402'):
-			print("Exports by Name")
-		case ('00030100'):
-			print("Next Set of XEX Privileges")
-		case default:
-			print("Unknown")
+	print("HeaderIDHandler being redone")
+#	LookUpValue = 
+#	match TypeDataStruct[LookAt]:
+#		case ('000002ff'):
+#			print("Resource Info:")
+#		case ('000003ff'):
+#			print("Base File Format:")
+#		case ('00000405'):
+#			print("Base Reference:")
+#		case ('000005ff'):
+#			print("Delta Patch Descriptor:")
+#		case ('000080ff'):
+#			print("Bounding Path:")
+#		case ('00008105'):
+#			print("Device ID:")
+#		case ('00010001'):
+#			print("Original Base Address:")
+#		case ('00010100'):
+#			print("Entry Point:")
+#		case ('00010201'):
+#			print("Image Base Address:")
+#		case ('000103ff'):
+#			print("Import Libraries:")
+#		case ('00018002'):
+#			print("Checksum Timestamp:")
+#		case ('00018102'):
+#			print("Enabled For Callcap:")
+#		case ('00018200'):
+#			print("Enabled For Fastcap:")
+#		case ('000183ff'):
+#			print("Original PE Name:")
+#		case ('000200ff'):
+#			print("Static Libraries:")
+#		case ('00020104'):
+#			print("TLS Info:")
+#		case ('00020200'):
+#			print("Default Stack Size:")
+#		case ('00020301'):
+#			print("Default Filesystem Cache Size:")
+#		case ('00020401'):
+#			print("Default Heap Size:")
+#		case ('00028002'):
+#			print("Page Heap Size and Flags:")
+#		case ('00030000'):
+#			print("System Flags:")
+#		case ('00040006'):
+#			print("Execution ID:")
+#		case ('000401ff'):
+#			print("Service ID List:")
+#		case ('00040201'):
+#			print("Title Workspace Size:")
+#		case ('00040310'):
+#			print("Game Ratings:")
+#		case ('00040404'):
+#			print("LAN Key:")
+#		case ('000405ff'):
+#			print("Xbox 360 Logo:")
+#		case ('000406ff'):
+#			print("Multidisc Media IDs:")
+#		case ('000407ff'):
+#			print("Alternate Title IDs:")
+#		case ('00040801'):
+#			print("Additional Title Memory:")
+#		case ('00e10402'):
+#			print("Exports by Name:")
+#		case ('00030100'):
+#			print("Extra XEX Requirements (Kinect, NXE Packages etc): NOT READY")
+#		case default:
+#			print("Unknown:")
 		
 def XEXHandler():
 
@@ -297,10 +298,11 @@ def XEXHandler():
 			InitialTypeSeek = InitialTypeSeek + 8
 			ValueDataStruct.append(ReadOut)
 
-		HeaderScanRange = 0 #Prints Header ID types in the XEX
+		HeaderScanRange = 0 #Prints Header ID types in the XEX, change
 		for x in range(DecimalHeaderCount):
 			HeaderIDHandler(HeaderScanRange)
-			HeaderScanRange = HeaderScanRange + 1
+			#print(ValueDataStruct[HeaderScanRange], "\n")
+			#HeaderScanRange = HeaderScanRange + 1
 
 def TypeHandler():
 	if FileType == b'CON ':
