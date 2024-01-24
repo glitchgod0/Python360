@@ -175,18 +175,111 @@ def ContentTypeHandler():
 			print("Content Type: Community Game")
 	return
 
+def HeaderIDHandler(LookAt):
+	#LookUpValue = 
+	match TypeDataStruct[LookAt]:
+		case ('000002ff'):
+			print("Resource Info")
+		case ('000003ff'):
+			print("Base File Format")
+		case ('00000405'):
+			print("Base Reference")
+		case ('000005ff'):
+			print("Delta Patch Descriptor")
+		case ('000080ff'):
+			print("Bounding Path")
+		case ('00008105'):
+			print("Device ID")
+		case ('00010001'):
+			print("Original Base Address")
+		case ('00010100'):
+			print("Entry Point")
+		case ('00010201'):
+			print("Image Base Address")
+		case ('000103ff'):
+			print("Import Libraries")
+		case ('00018002'):
+			print("Checksum Timestamp")
+		case ('00018102'):
+			print("Enabled For Callcap")
+		case ('00018200'):
+			print("Enabled For Fastcap")
+		case ('000183ff'):
+			print("Original PE Name")
+		case ('000200ff'):
+			print("Static Libraries")
+		case ('00020104'):
+			print("TLS Info")
+		case ('00020200'):
+			print("Default Stack Size")
+		case ('00020301'):
+			print("Default Filesystem Cache Size")
+		case ('00020401'):
+			print("Default Heap Size")
+		case ('00028002'):
+			print("Page Heap Size and Flags")
+		case ('00030000'):
+			print("System Flags")
+		case ('00040006'):
+			print("Execution ID")
+		case ('000401ff'):
+			print("Service ID List")
+		case ('00040201'):
+			print("Title Workspace Size")
+		case ('00040310'):
+			print("Game Ratings")
+		case ('00040404'):
+			print("LAN Key")
+		case ('000405ff'):
+			print("Xbox 360 Logo")
+		case ('000406ff'):
+			print("Multidisc Media IDs")
+		case ('000407ff'):
+			print("Alternate Title IDs")
+		case ('00040801'):
+			print("Additional Title Memory")
+		case ('00e10402'):
+			print("Exports by Name")
+		case ('00030100'):
+			print("Next Set of XEX Privileges")
+		case default:
+			print("Unknown")
+		
 def XEXHandler():
 
 	if DEBUG == False:
 		print("XEX2 file support is very basic and not ready. Do -dbg to see early progress.\n")
 
 	else:
-		print("XEX File:")
+		File.seek(7)
+		Flags = binascii.hexlify(File.read(1), b' ')  # Flags
+		match Flags:
+			case (b'00'):
+				print("Title Module")
+			case (b'01'):
+				print("Exports To Title")
+			case (b'02'):
+				print("System Debugger")
+			case (b'03'):
+				print("DLL Module")
+			case (b'04'):
+				print("Module Patch")
+			case (b'05'):
+				print("Patch Full")
+			case (b'06'):
+				print("Patch Delta")
+			case (b'07'):
+				print("User Mode")
+			case default:
+				print("Unknown Flag")
 
 		File.seek(20)
 		DecimalHeaderCount = int((repr(binascii.hexlify(File.read(4)))[2:10]), 16)
+		print("\nOptional Header Info:")
 		print("Optional Header Decimal =", DecimalHeaderCount)
 
+		global TypeDataStruct
+		global ValueDataStruct
 		TypeDataStruct = []
 		ValueDataStruct = []
 
@@ -204,35 +297,10 @@ def XEXHandler():
 			InitialTypeSeek = InitialTypeSeek + 8
 			ValueDataStruct.append(ReadOut)
 
-		TestPrint = 0 # This displays the results of both
+		HeaderScanRange = 0 #Prints Header ID types in the XEX
 		for x in range(DecimalHeaderCount):
-			print(TypeDataStruct[TestPrint], ValueDataStruct[TestPrint])
-			TestPrint = TestPrint + 1
-
-
-
-		File.seek(7)
-		Flags = binascii.hexlify(File.read(1), b' ')  # Flags
-		
-		#make into a match case
-		if Flags == b'00':
-			print("Title Module")
-		elif Flags == b'01':
-			print("Exports To Title")
-		elif Flags == b'02':
-			print("System Debugger")
-		elif Flags == b'03':
-			print("DLL Module")
-		elif Flags == b'04':
-			print("Module Patch")
-		elif Flags == b'05':
-			print("Patch Full")
-		elif Flags == b'06':
-			print("Patch Delta")
-		elif Flags == b'07':
-			print("User Mode")
-		else:
-			print("Unknown Flag")
+			HeaderIDHandler(HeaderScanRange)
+			HeaderScanRange = HeaderScanRange + 1
 
 def TypeHandler():
 	if FileType == b'CON ':
