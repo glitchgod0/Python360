@@ -1,0 +1,5 @@
+*.xex
+testfiles/
+xextest/
+testcon
+testlive
