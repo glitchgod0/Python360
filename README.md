@@ -11,5 +11,5 @@ Since this is my first orignal project the code is quite messy, I will be aiming
 Haven't implemented chunking yet, could eat big chunks of memory depending on file given while its running (not very long).
 
 ## Thanks
-[Free60 Wiki](https://free60.org/) - Literally couldn't have done this without this.
-[XEX 010 Binary Template](https://www.sweetscape.com/010editor/repository/templates/file_info.php?file=XEX.bt&type=0&sort=) - Really useful 010 Binary Template, alot of the XEX2 HeaderID value data are shown
+- [Free60 Wiki](https://free60.org/) - Literally couldn't have done this without this.
+- [XEX 010 Binary Template](https://www.sweetscape.com/010editor/repository/templates/file_info.php?file=XEX.bt&type=0&sort=) - Really useful 010 Binary Template, alot of the XEX2 HeaderID value data are shown
