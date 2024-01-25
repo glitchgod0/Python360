@@ -235,6 +235,9 @@ def HeaderValueHandler(AddressLocation, Valtype):
 		case ('00018200'):
 			print("\nEnabled For Fastcap:")
 		case ('000183ff'):
+			#
+			#	TODO: FIND AND READ A LENGTH VALUE
+			#
 			print("\nOriginal PE Name")
 			STFSUTFHandler(AddressLocation, 16, "PEName", "PENameOut", "PE Name:")
 		case ('000200ff'):
