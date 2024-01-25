@@ -1,6 +1,7 @@
 import sys
 import os 
 import binascii
+import math
 
 print("Python360 Test by Glitchgod\n")
 
@@ -189,9 +190,8 @@ def HeaderIDHandler():
 			AddressTypeDataStruct.append(0)
 
 		if AddressTypeDataStruct[CountVal] == 1:
-			print("Header ID and Data:", TypeDataStruct[CountVal], ValueDataStruct[CountVal])
+			print("\nHeader ID and Data:", TypeDataStruct[CountVal], ValueDataStruct[CountVal])
 		else:
-			print(f"\nlook at address: {ValueDataStruct[CountVal]} type: {TypeDataStruct[CountVal]}")
 			ValueType = TypeDataStruct[CountVal]
 			LookAt = int(ValueDataStruct[CountVal], 16)
 			HeaderValueHandler(LookAt, ValueType)
@@ -202,74 +202,96 @@ def HeaderIDHandler():
 
 
 def HeaderValueHandler(AddressLocation, Valtype):
+	SkipValue = 0
 	match Valtype:
 		case ('000002ff'):
 			print("\nResource Info")
-			STFSUTFHandler(AddressLocation, 12, "TitleID", "TitleIDOut", "Title ID:")
+			STFSUTFHandler(AddressLocation+4, 8, "TitleID", "TitleIDOut", "Title ID:")
+			ByteGrabber(AddressLocation+12, 4, "pResource:")
 		case ('000003ff'):
-			print("Base File Format:")
+			print("\nBase File Format:")
 		case ('00000405'):
-			print("Base Reference:")
+			print("\nBase Reference:")
 		case ('000005ff'):
-			print("Delta Patch Descriptor:")
+			print("\nDelta Patch Descriptor:")
 		case ('000080ff'):
-			print("Bounding Path:")
+			print("\nBounding Path:")
 		case ('00008105'):
-			print("Device ID:")
+			print("\nDevice ID:")
 		case ('00010001'):
-			print("Original Base Address:")
+			print("\nOriginal Base Address:")
 		case ('00010100'):
-			print("Entry Point:")
+			print("\nEntry Point:")
 		case ('00010201'):
-			print("Image Base Address:")
+			print("\nImage Base Address:")
 		case ('000103ff'):
-			print("Import Libraries:")
+			print("\nImport Libraries:")
 		case ('00018002'):
-			print("Checksum Timestamp:")
+			print("\nChecksum & Timestamp")
+			ByteGrabber(AddressLocation, 4, "Checksum:")
+			ByteGrabber(AddressLocation+4, 4, "Timestamp:")
 		case ('00018102'):
-			print("Enabled For Callcap:")
+			print("\nEnabled For Callcap:")
 		case ('00018200'):
-			print("Enabled For Fastcap:")
+			print("\nEnabled For Fastcap:")
 		case ('000183ff'):
-			print("Original PE Name:")
+			print("\nOriginal PE Name")
+			STFSUTFHandler(AddressLocation, 16, "PEName", "PENameOut", "PE Name:")
 		case ('000200ff'):
-			print("Static Libraries:")
+			print("\nStatic Libraries:")
 		case ('00020104'):
-			print("TLS Info:")
+			print("\nTLS Info:")
+			File.seek(AddressLocation)
+			print("Slot Count:", int((repr(binascii.hexlify(File.read(4)))[2:10]), 16))
 		case ('00020200'):
-			print("Default Stack Size:")
+			print("\nDefault Stack Size:")
 		case ('00020301'):
-			print("Default Filesystem Cache Size:")
+			print("\nDefault Filesystem Cache Size:")
 		case ('00020401'):
-			print("Default Heap Size:")
+			print("\nDefault Heap Size:")
 		case ('00028002'):
-			print("Page Heap Size and Flags:")
+			print("\nPage Heap Size and Flags:")
 		case ('00030000'):
-			print("System Flags:")
+			print("\nSystem Flags:")
 		case ('00040006'):
-			print("Execution ID:")
+			print("\nExecution ID:")
+			ByteGrabber(AddressLocation, 4, "Media ID:")
+			ByteGrabber(AddressLocation+4, 4, "Version:")
+			ByteGrabber(AddressLocation+8, 4, "Base Version:")
+			ByteGrabber(AddressLocation+12, 4, "TitleID:")
+			ByteGrabber(AddressLocation+16, 1, "Platform:")
+			ByteGrabber(AddressLocation+17, 1, "Executable Type:")
+			ByteGrabber(AddressLocation+18, 1, "Disc Number:")
+			ByteGrabber(AddressLocation+19, 1, "Disc Count:")
+			ByteGrabber(AddressLocation+20, 4, "SaveGameID:")
 		case ('000401ff'):
-			print("Service ID List:")
+			print("\nService ID List:")
 		case ('00040201'):
-			print("Title Workspace Size:")
+			print("\nTitle Workspace Size:")
 		case ('00040310'):
-			print("Game Ratings:")
+			print("\nGame Ratings:")
 		case ('00040404'):
-			print("LAN Key:")
+			ByteGrabber(AddressLocation, 18, "\nLAN Key:")
 		case ('000405ff'):
-			print("Xbox 360 Logo:")
+			print("\nXbox 360 Logo:")
 		case ('000406ff'):
-			print("Multidisc Media IDs:")
+			print("\nMultidisc Media IDs:")
 		case ('000407ff'):
-			print("Alternate Title IDs:")
+			SkipValue = 0
+			print("\nAlternate Title ID's:")
+			File.seek(AddressLocation)
+			IDCount = math.floor(int((repr(binascii.hexlify(File.read(4)))[2:10]), 16) / 4 -1)
+			for x in range(IDCount):
+				ByteGrabber(AddressLocation+4+SkipValue, 4, "Alternate Title ID:")
+				SkipValue = SkipValue + 4	
 		case ('00040801'):
-			print("Additional Title Memory:")
+			print("\nAdditional Title Memory:")
 		case ('00e10402'):
-			print("Exports by Name:")
+			print("\nExports by Name:")
 		case ('00030100'):
-			print("Extra XEX Requirements (Kinect, NXE Packages etc): NOT READY")
+			print("\nExtra XEX Requirements (Kinect, NXE Packages etc): NOT READY")
 		case default:
-			print("Unknown:")
+			print("\nUnknown:")
 		
 def XEXHandler():
 
